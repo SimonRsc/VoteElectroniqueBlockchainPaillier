@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Bienvenue </title>
+		<%- include('bootstrap.ejs');%>
+	</head>
+	<body>
+		<h1>Welcome <%=pseudo%></h1>
+
+		<p>
+			Vous allez voter dans une élection de test, ce système de vote utilise la blockchain
+		</p>
+
+
+		<div class="form-group">
+		<form  id="form_vote" action="/vote" method="post">
+
+	<p>Est ce que Simon est génial</p>
+
+			<label for="c1">Oui</label>
+			<input type="radio" id="c1" name="can" value="1">
+			<label for="c2">Non</label>
+			<input type="radio" id="c2" name="can" value="0">
+
+		<button type="submit" id="btn_vote" class="btn">Voter</button>
+		</form>
+		</div>
+
+
+
+	</body>
+</html>
