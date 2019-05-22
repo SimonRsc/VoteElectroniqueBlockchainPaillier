@@ -3,76 +3,102 @@ const Web3 = require('web3');
 const net = require('net');
 const http = require('http');
 const express= require('express');
+const paillier = require('./paillier-bignum/src/paillier.js');
+const JSAlert = require("js-alert");
 var Tx = require('ethereumjs-tx');
 var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 var app = express();
 const web3 = new Web3('http://127.0.0.1:7545');
 app.listen(3000);
+//css
+app.use(express.static(__dirname + '/public'));
 /*--------*/
-
 /*----Données utilisateurs----*/
-//A automatiser
-var account_pub = "0x67bD3C0315D3FD683d5b23Dc6674bB2BF9b3E675";
-var account_priv = Buffer.from("18efc807ea189568cd170beefd70da6a7d5c06ce858f22aef704291f67c642f1",'hex');
-var urne = "0xF8301b7fCC4De7a973f89215f7902b894Efb0C13";
+var Electeurs = ["Simon","Tristan","Cecile","Vincent","Jury1","Jury2"];
+var account = ["0x617eDC872FD0b3fFCf89A8a45d6F7E88AB54D8CD","0xbd18409F73b58aEFe7Bfca515c7cFEA0BD934dB9","0x3Aa851dFb51E6179f602230a7D79C0b5Cc69B68C","0xE2B6EF8C252443E4EbA11fd59f735E73e3FB842F","0x77309175654cDeF5bbEc900ac6DE14EFf7674a44"
+
+
+
+];
+var pf = [ "0b67659935b81ce93993b24e2111cc243697dc4dffb043158bed021802d72580",
+"17e9ff07a276ffee05f14873ac2c991498d16a7ca1b049a6e288e6735eaddff1",
+"f971dbeee55530990f4a2d461107a934157b48f9ac3215379f24ec916c411692",
+"d16a96b08e809501d88e5bbb3a76bd69c6c098aa3f36be5196b8f1141db018f0",
+"ffe45031462322deeaeb391a8a869a5427807115742c7d3c90e6dc48cd272ca4",
+"19715a8d3df1b412ebc22a9fd56478059b22fbe8eb4718034e6ec1f5df2b4609"
+];
+
+
+var account_pub
+var account_priv;
+var urne = "0xB7A5c180579827D8c4250553057f56177515a350";
 /*--------*/
 
 /*----Génération de la clé de l'élection----*/
-const max = 600; //Nombre maximum pour la génération des clés
-var keys = generateKey();
+const {publicKey, privateKey} = paillier.generateRandomKeys(100);
+
 /*--------*/
 
 
-app.get('/',function(req,res){
 
+
+app.get('/',function(req,res){
 	res.render('login.ejs');
 });
 
 
 app.post('/connexion',urlencodedParser,function(req,res){
-		res.render('welcome.ejs',{pseudo:req.body.name});
+  var find = 0
+  for (var i = 0; i < Electeurs.length; i++) {
+    if(Electeurs[i] == req.body.name){
+      account_priv = Buffer.from(pf[i],"hex");
+      account_pub = account[i];
+      	find = 1;
+    }
+  }
+  if(find == 1){
+    res.render('welcome.ejs',{pseudo:req.body.name ,success:0});
+  }else{
+    res.render('login.ejs');
+  }
 });
 
 
 app.post('/vote',urlencodedParser,function(req,res){
-vote(req.body.can);
-res.redirect('/');
+vote(req.body.can,res,req);
 });
 
 
-app.get('/visualisation',(req,res)=>{
-var vote = new Array()
+app.get('/visualisation', async function(req,res){
+var vote = new Array();
 
 //On récupère l'ensemble des vote sur la blockchain
-web3.eth.getBlockNumber((err,blockNumber)=>{
-	var cptBlock = 0;
+var blockNumber = await getBlockNumber();
+var cptBlock = 0;
+var block;
 	for(cptBlock;cptBlock<=blockNumber;cptBlock++){
-		web3.eth.getBlock(cptBlock,(err,block)=>{
-		web3.eth.getTransaction(block.transactions[0],(err,trans)=>{
+		block = await getBlock(cptBlock);
+		trans = await getTransactionVote(block);
 		if(trans != null && trans.to == urne){
-					vote.push(web3.utils.hexToUtf8(trans.input));
-					console.log(web3.utils.hexToUtf8(trans.input));
-					/*var tab = web3.utils.hexToUtf8(trans.input);
-					tab = tab.split(':')
-					if(tab.size>1){
-					console.log(decrypte(keys,tab[0],tab[]));
-				}*/
-				}
-			});
-		});
+			vote.push(web3.utils.hexToUtf8(trans.input));
+		}
+
 	}
+
+createVisu(vote,res);
 });
-});
+
+
 
 
 
 /*----Création et envoi du vote dans l'urne----*/
-function vote(candidat){
+function vote(candidat,res,req){
 	if(account_pub != null){
 		 web3.eth.getBalance(account_pub,function(err,qte){
 			 if(qte >=1){
-				 const vote = encrypte(keys,candidat);
+				 const vote = publicKey.encrypt(candidat);
 				 web3.eth.getTransactionCount(account_pub,(err,tCount)=>{
 					 //On créer la transaction
 					 var trans = {
@@ -80,10 +106,10 @@ function vote(candidat){
 						 to : urne,
 						 value : web3.utils.toHex(web3.utils.toWei('1','ether')),
 						 gas: web3.utils.toHex('1000000'),
-						 gasPrice : web3.utils.toHex(web3.utils.toWei('10','gwei')),
+						 gasPrice : web3.utils.toHex(web3.utils.toWei('0','gwei')),
 						 //On insère le vote
-						 data : web3.utils.utf8toHex(encodeURI(vote.C1.toString()+":"+vote.C2.toString()))
-					 }
+						 data : web3.utils.utf8ToHex(encodeURI(vote.toString()))
+					}
 
 					 //On signe la transaction
 					 const tx = new Tx(trans);
@@ -95,51 +121,47 @@ function vote(candidat){
 
 					 //On l'envoi
 					 web3.eth.sendSignedTransaction(serTrans,(err,num)=>{
-
-					 })
+              if(err!= null){
+                res.render('welcome.ejs',{pseudo:req.body.name ,success:1, transaction:num});
+              }else{
+                res.render('welcome.ejs',{pseudo:req.body.name ,success:-2, err:err});
+              }
+					 });
 				 });
-			 }
+			 }else{
+          res.render('welcome.ejs',{pseudo:req.body.name ,success:-1});
+        }
 		});
 	}
 }
 /*--------*/
 
 
-/*----Génération de la clé du vote----*/
-function generateKey(){
-	var keys = new Object();
-	keys.p = Math.floor(Math.random() * Math.floor(max));
-	keys.g =  Math.floor(Math.random() * Math.floor(keys.p));
-	keys.x =  Math.floor(Math.random() * Math.floor(max))%keys.p;
-	keys.h = puissance(keys.g,keys.x,keys.p);
-	return keys;
+function createVisu(vote,res){
+    let encryptedSum = vote[0];
+  for (var i = i; i < vote.length; i++) {
+     encryptedSum = publicKey.addition(encryptedSum, vote[i]);
 }
-/*--------*/
+var sum = encryptedSum;
+var result = privateKey.decrypt(encryptedSum);
+res.render('visualisation.ejs',{sum :sum, res:result,nbVotant:vote.length});
+}
 
-/*----Fonction d'encryptage d'un vote----*/
-function encrypte(keys,nb){
-	var message = new Object();
-	const k =  Math.floor(Math.random() * 50);
-	message.C1 = puissance(keys.g,k,keys.p);
-	message.C2 = (puissance(keys.h,k,keys.p)*nb);
-	return message;
-}
-/*--------*/
 
-/*----Fonction de décryptage d'un vote----*/
-function decrypte(keys,c1,c2){
-	return (c2/(puissance(c1,keys.x,keys.p)));
-}
-/*--------*/
 
-/*----Fonction de puissance avec un modulo----*/
-function puissance(nb,puis,mod){
-	res = nb;
-	cpt = 1;
-	while (cpt <= puis){
-		res = (res * nb)%mod;
-		cpt++;
-	}
-	return res;
+ async function getBlockNumber(){
+
+	  blockNumber = await web3.eth.getBlockNumber(async function(err,blockNumber){return blockNumber;});
+		return blockNumber;
 }
-/*--------*/
+
+async function getBlock(cptBlock){
+	return await web3.eth.getBlock(cptBlock,function(err,block){return block;});
+}
+
+
+async function getTransactionVote(block){
+	return await web3.eth.getTransaction(block.transactions[0], function(err,trans){
+		 return trans;
+	 });
+}

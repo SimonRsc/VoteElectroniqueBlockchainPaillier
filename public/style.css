@@ -1,0 +1,63 @@
+div.container{
+  background-color: rgb(249, 203, 156);
+
+}
+
+html{
+  min-height: 100%;
+}
+
+body{
+  height:100%;
+  background-color:rgb(215, 227, 244);
+}
+
+div{
+  margin-top:auto;
+  margin-bottom:auto;
+}
+
+h1{
+  border-radius: 7px;
+}
+
+#connexion{
+  margin-top: 2%;
+  padding: 2.5%;
+  border-radius: 15px;
+}
+
+button{
+  margin-top: 2%;
+}
+
+input{
+  margin-top: 2%;
+  margin-bottom: 1%;
+}
+
+#info{
+  border-radius: 7px;
+    background-color:rgba(215, 227, 244,0.5);
+}
+
+.alert-danger{
+  background-color: rgb(194, 83, 87);
+}
+
+.form-group{
+  text-align:center;
+}
+
+label{
+  font-size: 15pt;
+}
+
+span{
+  margin-left: 7%;
+  margin-right:7%;
+}
+
+.btn-perso{
+  background-color:rgb(215, 227, 244);
+}

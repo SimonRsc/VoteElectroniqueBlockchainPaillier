@@ -4,30 +4,98 @@
 		<meta charset="utf-8">
 		<title>Bienvenue </title>
 		<%- include('bootstrap.ejs');%>
+		<link rel="stylesheet" href="style.css">
+
 	</head>
 	<body>
-		<h1>Welcome <%=pseudo%></h1>
 
-		<p>
-			Vous allez voter dans une élection de test, ce système de vote utilise la blockchain
-		</p>
+<div class="container">
+<div class="row">
+	<div class="col-4">
 
+	</div>
+	<div class="col-4" style="text-align:center;">
+		<h1 >Bienvenue <%=pseudo%></h1>
+	</div>
+	<div class="col-2">
 
-		<div class="form-group">
-		<form  id="form_vote" action="/vote" method="post">
+	</div>
 
-	<p>Est ce que Simon est génial</p>
+	<div class="col-1">
+		<a href="/" ><button type="button" name="button" class="btn btn-perso">Déconnexion</button></a>
+	</div>
+</div>
 
-			<label for="c1">Oui</label>
-			<input type="radio" id="c1" name="can" value="1">
-			<label for="c2">Non</label>
-			<input type="radio" id="c2" name="can" value="0">
+<div class="row">
+	<div class="col-3">
 
-		<button type="submit" id="btn_vote" class="btn">Voter</button>
-		</form>
+	</div>
+	<div class="col-7">
+
+		Vous allez voter dans un référendum test. Ce système de vote utilise la blockchain.
+	</div>
+</div>
+<hr>
+		<% if(success == 1){%>
+			<div class="alert alert-success" role="alert">
+  		Votre numéro de transaction est <%=transaction%> Vous pouvez vérifier que votre transaction a bien été intégré dans la blockchain
+	</div>
+	<% }else if(success == -1){%>
+		<div class="alert alert-danger" role="alert">
+			Vous avez déjà voté pour ce vote !
 		</div>
 
+		<% }else if(success == -2){%>
 
+			<div class="alert alert-warning" role="alert">
+Une erreur s'est produite : <%=err%>
+			</div>
+			<% }%>
+
+
+
+<div class="row">
+<div class="col-2">
+
+</div>
+		<div class="col-8">
+			<h5 class="alert alert-secondary" id="info" style="text-align:center;">
+				Souhaitez-vous que la saison 8 de Game of Thrones soit retourner ?
+			</h5>
+		</div>
+	</div>
+
+	<div class="row">
+
+<div class="col-4">
+
+</div>
+<div class="col-4" style="text-align:center;">
+	<div class="form-group">
+	<form  id="form_vote" action="/vote" method="post">
+		<span >
+			<label for="c1">Oui</label>
+				<input type="radio" id="c1" name="can" value="1" required>
+		</span>
+		<span>
+			<label for="c2">Non</label>
+				<input type="radio" id="c2" name="can" value="0" required>
+		</span>
+
+
+		</div>
+
+		<div class="form-group" style="text-align:center;">
+			<button type="submit" id="btn_vote" class="btn">Voter</button>
+		</div>
+	</form>
+	</div>
+</div>
+	</div>
+
+
+
+	</div>
 
 	</body>
 </html>

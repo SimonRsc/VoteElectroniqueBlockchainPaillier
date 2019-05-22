@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>Résultats </title>
+  <%- include('bootstrap.ejs');%>
+  <link rel="stylesheet" href="style.css">
+
+</head>
+  <body>
+<div class="container">
+  <div class="row">
+  	<div class="col-3">
+
+  	</div>
+  	<div class="col-7">
+<h1>
+  Résultat du référendum test
+</h1>
+  	</div>
+  </div>
+<hr>
+  <div class="row">
+
+    <div class="col-11">
+<p>La somme encryptée des votes est : <%= sum%></p>
+
+</div>
+</div>
+  </div>
+</div>
+
+<div class="container">
+
+
+<div class="row">
+  <div class="col-12">
+
+    <p>Il y a eu <%= nbVotant%> votants dans ce référendum. </p>
+  </div>
+
+<p id="voteOui" hidden> <%-(res / nbVotant) * 100%></p>
+<p id="voteNon" hidden><%- (nbVotant-res)/nbVotant * 100%> </p>
+<hr>
+
+
+<canvas id="chart" width="750" height="400">
+
+</canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<script>
+console.log(document.getElementById("voteOui").textContent);
+var ctx = document.getElementById('chart').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    maintainAspectRatio:false,
+    data: {
+        labels: ['Oui','Non'],
+        datasets: [{
+            label: 'Vote',
+            data: [document.getElementById("voteOui").textContent,document.getElementById("voteNon").textContent],
+            backgroundColor: [
+                'rgba(54, 162, 235, 0.8)',
+                'rgba(194, 83, 87,0.8)'
+            ],
+            borderColor: [
+                'rgba(54, 162, 235, 1)',
+                'rgba(194, 83, 87,0.8)'
+
+            ],
+            borderWidth: 2
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    min: 0,
+                    max : 100,
+                    stepSize:10
+                }
+            }]
+        }
+    }
+});
+
+</script>
+
+</div>
+
+</div>
+</div>
+  </body>
+</html>

@@ -4,26 +4,63 @@
 		<meta charset="utf-8">
 		<title>Accueil</title>
 		<%- include('bootstrap.ejs');%>
+		<link rel="stylesheet" href="style.css">
 	</head>
 	<body>
-		
-		<h1>Bienvenu dans le processus de vote électronique</h1>
 
-	<div class="container">
-		<div class="row">
-			<div class="form-group">
+		<div class="container">
+			<div class="row">
+				<div class="col-3">
+
+				</div>
+				<div class="col-6" style="text-align:center;">
+
+					<h1 style="font-variant:small-caps;">e-Referendum</h1>
+				</div>
+				<div class="col-1">
+
+				</div>
+				<div class="col-2">
+						<a href="/visualisation">
+							<button type="button" name="button" class="btn btn-perso"> Voir les résultats</button>
+						</a>
+				</div>
+			</div>
+			<hr>
+</div>
+<div class="container" style="background-color:rgba(0,0,0,0);margin-top:2%">
+	<div class="row">
+		<div class="col-4">
+
+		</div>
+		<div class="col-4" style="text-align:center;">
+				<img src="logo.png" alt="" style="width:50%;">
+		</div>
+
+	</div>
+
+</div>
+<div class="container" id="connexion">
+
+		<div class="row h-100">
+			<div class="col-4">
+
+			</div>
+			<div class="col-4 my-auto">
+
+			<div class="form-group" style="text-align:center;">
+
+				<h2 class="">Identification</h2>
 				<form  action="/connexion" method="POST">
-					<label for="name"> Nom d'utilisateur</label>
-					<input class=" form-control" type="text" name="name">
-
-					<label for="mdp"> Mot de passe</label>
-					<input class="form-control" type="password" name="mdp" value="">
-					<button class="btn primal-btn" type="submit" name="button">Connexion</button>
+				<input class=" form-control" type="text" name="name" placeholder="Qui êtes-vous ?">
+				<button class="btn primal-btn" type="submit" name="button">Connexion</button>
 
 				</form>
+			</div>
 
 			</div>
 		</div>
+	</div>
 	</div>
 
 
