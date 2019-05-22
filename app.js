@@ -85,8 +85,9 @@ var block;
 		}
 
 	}
-
-createVisu(vote,res);
+if(vote.length>0){
+	createVisu(vote,res);
+}
 });
 
 
@@ -139,7 +140,7 @@ function vote(candidat,res,req){
 
 function createVisu(vote,res){
     let encryptedSum = vote[0];
-  for (var i = i; i < vote.length; i++) {
+  for (var i = 1; i < vote.length; i++) {
      encryptedSum = publicKey.addition(encryptedSum, vote[i]);
 }
 var sum = encryptedSum;

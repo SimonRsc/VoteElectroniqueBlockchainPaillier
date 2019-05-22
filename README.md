@@ -1,20 +1,17 @@
-/*-------------------*/
+
 - Installer npm : sudo apt-get install npm
 
--Installer Ganache et lancer une blockchain à l'adresse 127.0.0.1:7545
+- Installer Ganache et lancer une blockchain à l'adresse 127.0.0.1:7545
 
 - Dans le fichier app.js :
-	account_pub : clé publique d'un compte
-	account_priv : clé privé de ce même compte
-	urne : clé publique d'un second compte
+	- Dans le Electeurs insérer les différents identifiants pour les électeur
+	- Dans le tableau account : les clés publique des comptes
+	- Dans le tableau pf : les clés privées des comptes
+	- urne : clé publique d'un second compte
 
-	-Dans le dossier :
+	- Dans le dossier SolidityMaster :
 
 		- npm install pour installer les dépendance
-		-node app.js pour lancer l'application
+		- node app.js pour lancer l'application
 
-		puis firefox 127.0.0.1:3000 pour l'ouvrir
-
-		Pas besoin de nom de compte ni de mot de passe
-
-/*----------------------*/
+	- 127.0.0.1:3000 pour accéder à la plateforme
