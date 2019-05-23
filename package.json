@@ -12,6 +12,6 @@
         "js-alert": "^1.0.4",
         "web3": "^1.0.0-beta.52"
     },
-    "author": "Simon Raschetti",
+    "author": "Tristan Lamur, Vincent Martin, Simon Raschetti, Cecile Robichon",
     "description": "Vote électronique projet"
 }
