@@ -7,7 +7,7 @@
 	- Dans le Electeurs insérer les différents identifiants pour les électeur
 	- Dans le tableau account : les clés publique des comptes
 	- Dans le tableau pf : les clés privées des comptes
-	- urne : clé publique d'un second compte
+	- urne : clé publique d'un autre compte
 
 	- Dans le dossier SolidityMaster :
 
